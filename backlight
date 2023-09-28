@@ -1,0 +1,29 @@
+#!/usr/bin/sh
+
+# Script:       backlight
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      02-10-23
+# Dependencies: acpilight, dunstify
+#
+# Copyright (C) 2023 Arkaprabha Chakraborty
+
+PROG=xbacklight
+NOTIPROG=dunstify
+
+case $1 in
+-i)
+  # Set the bval on (if it was muted)
+  $PROG -inc 10
+  ;;
+-d)
+  if [ $($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') -le 20 ]; then
+    $PROG -set 10
+  else
+    $PROG -dec 10
+  fi
+  ;;
+esac
+
+bval=$($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') # brightness value
+$NOTIPROG -a "brictl" -u low -r "9997" -h int:value:"$bval" -i "bright-$1" "Brightness: ${bval}%" -t 2000

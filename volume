@@ -1,0 +1,63 @@
+#!/usr/bin/sh
+
+# Script:       volume
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      27-9-23
+# Dependencies: pipewire-pulseaudio, pamixer, dunstify
+#
+# Copyright (C) 2023 Arkaprabha Chakraborty
+
+# semicolon separated volume rules for multiple sinks
+rules="<sink> <volume>;<sink> <volume>;<sink> <volume>"
+
+max=80 # default max volume
+step=5 # volume change step
+
+shopt -s lastpipe # run last pipe-element in the shell process
+# set max volume for default sink
+echo -e $rules | tr ';' '\n' | while read rule; do
+  if [ $(pactl get-default-sink) = $(echo $rule | awk '{ print $1 }') ]; then
+    max=$(echo $rule | awk '{ print $2 }')
+  fi
+done
+
+case $1 in # pattern match option
+-i)
+  pamixer -u # unmute if muted
+
+  # set max volume if intended increase step exceeds max volume
+  if [ $(pamixer --get-volume) -ge $max ]; then
+    pamixer --allow-boost --set-volume $max
+  elif [ $(pamixer --get-volume) -le $max ] && [ $(pamixer --get-volume) -ge $((max - step)) ]; then
+    pamixer --allow-boost --set-volume $max
+  else
+    pamixer -i $step --allow-boost # increase volume
+  fi
+  volume=$(pamixer --get-volume) # get current volume
+
+  # send notification with current volume
+  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" -i "volume-$1" "Volume: ${volume}%" -t 2000
+  ;;
+-d)
+  pamixer -u                     # unmute if muted
+  pamixer -d $step --allow-boost # decrease volume
+
+  if [ $(pamixer --get-volume) -ge $max ]; then
+    pamixer --allow-boost --set-volume $max
+  fi
+
+  volume=$(pamixer --get-volume) # get current volume
+
+  # send notification with current volume
+  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" -i "volume-$1" "Volume: ${volume}%" -t 2000
+  ;;
+-m)
+  pamixer -t                     # toggle mute
+  if $(pamixer --get-mute); then # send notification with mute status
+    dunstify -i volume-mute -a "volume" -t 2000 -r 9993 -u low "Muted"
+  else
+    dunstify -i volume-mute -a "volume" -t 2000 -r 9993 -u low "Unmuted"
+  fi
+  ;;
+esac
