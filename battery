@@ -1,0 +1,46 @@
+#!/usr/bin/sh
+
+# Script:       battery
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      07-08-23
+# Dependencies: dunstify
+#
+# Copyright (C) 2023 Arkaprabha Chakraborty
+
+last_capacity="NONE"
+last_status="None"
+
+LOW=20
+CRITICAL=10
+
+while true; do
+  BATTERY="/sys/class/power_supply/CMB0"
+  if [ -d $BATTERY ]; then
+    capacity=$(cat $BATTERY/capacity)
+    status=$(cat $BATTERY/status)
+
+    if [ $last_status = "None" ]; then
+      last_status=$status
+    elif [ $last_status != "Discharging" ] && [ $status = "Discharging" ]; then
+      notify-send "Power Unplugged" --replace-id 667
+      last_status=$status
+    elif [ $last_status != "Charging" ] && [ $status = "Charging" ]; then
+      notify-send "Power Plugged" --replace-id 667
+      last_status=$status
+    fi
+
+    if [ $last_capacity != "FULL" ] && [ $status = "Full" ]; then
+      notify-send "Battery Full" --replace-id 666
+      last_capacity="FULL"
+    elif [ $last_capacity != "LOW" ] && [ $status = "Discharging" ] &&
+      [ $capacity -le $LOW ] && [ $capacity -gt $CRITICAL ]; then
+      notify-send "Battery Low: $capacity%" --replace-id 666
+      last_capacity=LOW
+    elif [ $status = "Discharging" ] && [ $capacity -le $CRITICAL ]; then
+      notify-send --urgency critical "Battery Critical: $capacity%" --replace-id 666
+      last_capacity=CRITICAL
+    fi
+  fi
+  sleep 2
+done
