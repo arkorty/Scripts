@@ -8,17 +8,22 @@
 #
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
-# semicolon separated volume rules for multiple sinks
-rules="<sink> <volume>;<sink> <volume>;<sink> <volume>"
+# icon paths
+VOLUME_MUTED=/usr/share/icons/Papirus/48x48/status/notification-audio-volume-muted.svg
+VOLUME_UNMUTED=/usr/share/icons/Papirus/48x48/status/notification-audio-volume-high.svg
+AUDIO_SPEAKER=/usr/share/icons/Papirus/48x48/devices/audio-speakers.svg
 
-max=80 # default max volume
-step=5 # volume change step
+# semicolon separated volume rule for multiple sinks
+RULE="<sink> <volume>;<sink> <volume>;<sink> <volume>"
+
+MAX=80 # default max volume
+STEP=5 # volume change step
 
 shopt -s lastpipe # run last pipe-element in the shell process
 # set max volume for default sink
-echo -e $rules | tr ';' '\n' | while read rule; do
+echo -e $RULE | tr ';' '\n' | while read rule; do
   if [ $(pactl get-default-sink) = $(echo $rule | awk '{ print $1 }') ]; then
-    max=$(echo $rule | awk '{ print $2 }')
+    MAX=$(echo $rule | awk '{ print $2 }')
   fi
 done
 
@@ -27,37 +32,37 @@ case $1 in # pattern match option
   pamixer -u # unmute if muted
 
   # set max volume if intended increase step exceeds max volume
-  if [ $(pamixer --get-volume) -ge $max ]; then
-    pamixer --allow-boost --set-volume $max
-  elif [ $(pamixer --get-volume) -le $max ] && [ $(pamixer --get-volume) -ge $((max - step)) ]; then
-    pamixer --allow-boost --set-volume $max
+  if [ $(pamixer --get-volume) -ge $MAX ]; then
+    pamixer --allow-boost --set-volume $MAX
+  elif [ $(pamixer --get-volume) -le $MAX ] && [ $(pamixer --get-volume) -ge $((MAX - STEP)) ]; then
+    pamixer --allow-boost --set-volume $MAX
   else
-    pamixer -i $step --allow-boost # increase volume
+    pamixer -i $STEP --allow-boost # increase volume
   fi
   volume=$(pamixer --get-volume) # get current volume
 
   # send notification with current volume
-  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" -i "volume-$1" "Volume: ${volume}%" -t 2000
+  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" "Volume: ${volume}%" -t 2000 -i $AUDIO_SPEAKER
   ;;
 -d)
   pamixer -u                     # unmute if muted
-  pamixer -d $step --allow-boost # decrease volume
+  pamixer -d $STEP --allow-boost # decrease volume
 
-  if [ $(pamixer --get-volume) -ge $max ]; then
-    pamixer --allow-boost --set-volume $max
+  if [ $(pamixer --get-volume) -ge $MAX ]; then
+    pamixer --allow-boost --set-volume $MAX
   fi
 
   volume=$(pamixer --get-volume) # get current volume
 
   # send notification with current volume
-  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" -i "volume-$1" "Volume: ${volume}%" -t 2000
+  dunstify -a "volume" -u low -r "9993" -h int:value:"$volume" "Volume: ${volume}%" -t 2000 -i $AUDIO_SPEAKER
   ;;
 -m)
   pamixer -t                     # toggle mute
   if $(pamixer --get-mute); then # send notification with mute status
-    dunstify -i volume-mute -a "volume" -t 2000 -r 9993 -u low "Muted"
+    dunstify -a "volume" -t 2000 -r 9993 -u low "Muted" -i $VOLUME_MUTED
   else
-    dunstify -i volume-mute -a "volume" -t 2000 -r 9993 -u low "Unmuted"
+    dunstify -a "volume" -t 2000 -r 9993 -u low "Unmuted" -i $VOLUME_UNMUTED
   fi
   ;;
 esac

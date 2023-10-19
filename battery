@@ -8,11 +8,21 @@
 #
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
-last_capacity="NONE"
-last_status="None"
+PROG=dunstify
 
+# icon paths
+BATTERY_FULL=/usr/share/icons/Papirus/48x48/status/battery-full.svg
+BATTERY_LOW=/usr/share/icons/Papirus/48x48/status/battery-low.svg
+BATTERY_CAUTION=/usr/share/icons/Papirus/48x48/status/battery-caution.svg
+AC_ADAPTER=/usr/share/icons/Papirus/48x48/status/ac-adapter.svg
+
+# capacity checkpoints
 LOW=20
 CRITICAL=10
+
+# status flags
+last_capacity=NONE
+last_status=None
 
 while true; do
   BATTERY="/sys/class/power_supply/CMB0"
@@ -23,22 +33,22 @@ while true; do
     if [ $last_status = "None" ]; then
       last_status=$status
     elif [ $last_status != "Discharging" ] && [ $status = "Discharging" ]; then
-      notify-send "Power Unplugged" --replace-id 667
+      $PROG "Power Unplugged" --replace 667 --icon $AC_ADAPTER --timeout 2000
       last_status=$status
     elif [ $last_status != "Charging" ] && [ $status = "Charging" ]; then
-      notify-send "Power Plugged" --replace-id 667
+      $PROG "Power Plugged" --replace 667 --icon $AC_ADAPTER --timeout 2000
       last_status=$status
     fi
 
     if [ $last_capacity != "FULL" ] && [ $status = "Full" ]; then
-      notify-send "Battery Full" --replace-id 666
+      $PROG "Battery Full" --replace 666 --icon $BATTERY_FULL
       last_capacity="FULL"
     elif [ $last_capacity != "LOW" ] && [ $status = "Discharging" ] &&
       [ $capacity -le $LOW ] && [ $capacity -gt $CRITICAL ]; then
-      notify-send "Battery Low: $capacity%" --replace-id 666
+      $PROG "Battery Low: $capacity%" --replace 666 --icon $BATTERY_LOW
       last_capacity=LOW
     elif [ $status = "Discharging" ] && [ $capacity -le $CRITICAL ]; then
-      notify-send --urgency critical "Battery Critical: $capacity%" --replace-id 666
+      $PROG --urgency critical "Battery Critical: $capacity%" --replace 666 --icon $BATTERY_CAUTION
       last_capacity=CRITICAL
     fi
   fi
