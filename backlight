@@ -8,6 +8,9 @@
 #
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
+# icon path
+BRIGHTNESS=/usr/share/icons/Papirus/48x48/apps/display-brightness.svg
+
 PROG=xbacklight
 NOTIPROG=dunstify
 
@@ -26,4 +29,4 @@ case $1 in
 esac
 
 bval=$($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') # brightness value
-$NOTIPROG -a "brictl" -u low -r "9997" -h int:value:"$bval" -i "bright-$1" "Brightness: ${bval}%" -t 2000
+$NOTIPROG -a "brictl" -u low -r "9997" -h int:value:"$bval" -i $BRIGHTNESS "Brightness: ${bval}%" -t 2000
