@@ -17,10 +17,16 @@ NOTIPROG=dunstify
 case $1 in
 -i)
   # Set the brightness on (if it was muted)
-  $PROG -inc 10
+  if [ $($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') -ge 10 ]; then
+    $PROG -inc 10
+  else
+    $PROG -set 10
+  fi
   ;;
 -d)
-  if [ $($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') -le 20 ]; then
+  if [ $($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') -le 10 ]; then
+    $PROG -set 1
+  elif [ $($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') -le 20 ]; then
     $PROG -set 10
   else
     $PROG -dec 10
