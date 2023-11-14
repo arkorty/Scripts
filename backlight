@@ -16,7 +16,7 @@ NOTIPROG=dunstify
 
 case $1 in
 -i)
-  # Set the bval on (if it was muted)
+  # Set the brightness on (if it was muted)
   $PROG -inc 10
   ;;
 -d)
@@ -28,5 +28,5 @@ case $1 in
   ;;
 esac
 
-bval=$($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') # brightness value
-$NOTIPROG -a "brictl" -u low -r "9997" -h int:value:"$bval" -i $BRIGHTNESS "Brightness: ${bval}%" -t 2000
+brightness=$($PROG -getf | awk '{print substr($1, 1, length($1)-2)}') # brightness value
+$NOTIPROG -a "brictl" -u low -r "9997" -h int:value:"$brightness" -i $BRIGHTNESS "Brightness: ${brightness}%" -t 2000
