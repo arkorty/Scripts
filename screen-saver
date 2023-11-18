@@ -8,8 +8,15 @@
 #
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
+COPY=cp
 PROG=mpv
 FLAGS='--loop=inf --fullscreen'
+SAVER=$HOME/.ss
 VID=$1
 
-$PROG $FLAGS $VID
+if [[ -e $VID ]]; then
+  $COPY $VID $SAVER
+  $PROG $FLAGS $VID
+else
+  $PROG $FLAGS $SAVER
+fi
