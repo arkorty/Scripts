@@ -12,7 +12,7 @@ PROG=maim
 NOTIPROG=dunstify
 
 timestamp=$(date +%F-%T)
-PROG -u -s "$HOME/Pictures/Screenshots/$timestamp-screenshot.png"
+$PROG -u -s "$HOME/Pictures/Screenshots/$timestamp-screenshot.png"
 
-NOTIPROG "Captured" -a "maim" -u "low" -t "2000" -I "$HOME/Pictures/\
+$NOTIPROG "Captured" -a "maim" -u "low" -t "2000" -I "$HOME/Pictures/\
 Screenshots/$timestamp-screenshot.png"
