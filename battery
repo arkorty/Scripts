@@ -11,10 +11,11 @@
 PROG=dunstify
 
 # icon paths
-BATTERY_FULL=/usr/share/icons/Papirus/48x48/status/battery-full.svg
-BATTERY_LOW=/usr/share/icons/Papirus/48x48/status/battery-low.svg
-BATTERY_CAUTION=/usr/share/icons/Papirus/48x48/status/battery-caution.svg
-AC_ADAPTER=/usr/share/icons/Papirus/48x48/status/ac-adapter.svg
+ICON_DIR=/usr/share/icons/Gruvbox-Material-Dark
+BATTERY_FULL=$ICON_DIR/48x48/status/battery-full.svg
+BATTERY_LOW=$ICON_DIR/48x48/status/battery-low.svg
+BATTERY_CAUTION=$ICON_DIR/48x48/status/battery-caution.svg
+AC_ADAPTER=$ICON_DIR/48x48/status/ac-adapter.svg
 
 # capacity checkpoints
 LOW=20
