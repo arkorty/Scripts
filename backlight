@@ -9,7 +9,8 @@
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
 # icon path
-BRIGHTNESS=/usr/share/icons/Papirus/48x48/apps/display-brightness.svg
+ICON_DIR=/usr/share/icons/Gruvbox-Material-Dark
+BRIGHTNESS=$ICON_DIR/48x48/apps/display-brightness.svg
 
 PROG=xbacklight
 NOTIPROG=dunstify

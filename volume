@@ -9,9 +9,10 @@
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
 # icon paths
-VOLUME_MUTED=/usr/share/icons/Papirus/48x48/status/notification-audio-volume-muted.svg
-VOLUME_UNMUTED=/usr/share/icons/Papirus/48x48/status/notification-audio-volume-high.svg
-AUDIO_SPEAKER=/usr/share/icons/Papirus/48x48/devices/audio-speakers.svg
+ICON_DIR=/usr/share/icons/Gruvbox-Material-Dark
+VOLUME_MUTED=$ICON_DIR/48x48/status/notification-audio-volume-muted.svg
+VOLUME_UNMUTED=$ICON_DIR/48x48/status/notification-audio-volume-high.svg
+AUDIO_SPEAKER=$ICON_DIR/48x48/devices/audio-speakers.svg
 
 # semicolon separated volume rule for multiple sinks
 RULE="<sink> <volume>;<sink> <volume>;<sink> <volume>"
