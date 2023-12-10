@@ -17,7 +17,7 @@ AUDIO_SPEAKER=$ICON_DIR/48x48/devices/audio-speakers.svg
 # semicolon separated volume rule for multiple sinks
 RULE="<sink> <volume>;<sink> <volume>;<sink> <volume>"
 
-MAX=80 # default max volume
+MAX=100 # default max volume
 STEP=5 # volume change step
 
 shopt -s lastpipe # run last pipe-element in the shell process
