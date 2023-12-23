@@ -1,0 +1,14 @@
+#!/usr/bin/sh
+
+# Script:       suspend
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      23-12-2023
+# Dependencies: systemd
+#
+# Copyright (C) 2023 Arkaprabha Chakraborty
+
+PROG=systemctl
+OPTS=suspend
+
+$PROG $OPTS
