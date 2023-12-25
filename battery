@@ -11,7 +11,7 @@
 PROG=dunstify
 
 # icon paths
-ICON_DIR=/usr/share/icons/Gruvbox-Material-Dark
+ICON_DIR=/usr/share/icons/<ICON_PACK>
 BATTERY_FULL=$ICON_DIR/48x48/status/battery-full.svg
 BATTERY_LOW=$ICON_DIR/48x48/status/battery-low.svg
 BATTERY_CAUTION=$ICON_DIR/48x48/status/battery-caution.svg

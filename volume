@@ -9,7 +9,7 @@
 # Copyright (C) 2023 Arkaprabha Chakraborty
 
 # icon paths
-ICON_DIR=/usr/share/icons/Gruvbox-Material-Dark
+ICON_DIR=/usr/share/icons/<ICON_PACK>
 VOLUME_MUTED=$ICON_DIR/48x48/status/notification-audio-volume-muted.svg
 VOLUME_UNMUTED=$ICON_DIR/48x48/status/notification-audio-volume-high.svg
 AUDIO_SPEAKER=$ICON_DIR/48x48/devices/audio-speakers.svg
