@@ -1,0 +1,26 @@
+#!/usr/bin/sh
+
+# Script:       exbacklight
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      27-12-23
+# Dependencies: ddcutil, dialog, dunstify
+#
+# Copyright (C) 2023 Arkaprabha Chakraborty
+
+# icon path
+ICON_DIR=/usr/share/icons/Papirus
+ICON_BRIGHTNESS=$ICON_DIR/48x48/apps/display-brightness.svg
+
+PROG=ddcutil
+FLAG='--brief --display 1 setvcp 10'
+NOTI=dunstify
+
+BRIGHTNESS=$(dialog --inputbox "Enter the brightness to be set [1-100]:" 0 44 \
+  3>&1 1>&2 2>&3 3>&-)
+
+if [ $BRIGHTNESS -ge 1 ] && [ $BRIGHTNESS -le 100 ]; then
+  setsid -f $PROG $FLAG $BRIGHTNESS &
+  $NOTI -a "exbacklight" -u low -r "9997" -h int:value:"$BRIGHTNESS" -i \
+  $ICON_BRIGHTNESS "Brightness: ${BRIGHTNESS}%" -t 2000
+fi
