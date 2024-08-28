@@ -1,14 +1,21 @@
-#!/usr/bin/sh
-
+#!/bin/sh
+#
 # Script:       suspend
 # License:      MIT
 # Author:       Arkaprabha Chakraborty
-# Created:      23-12-2023
-# Dependencies: systemd
+# Created:      12-05-24
+# Dependencies: None
 #
-# Copyright (C) 2023 Arkaprabha Chakraborty
+# Copyright (C) 2024 Arkaprabha Chakraborty
 
-PROG=systemctl
-OPTS=suspend
+# Call systemctl suspend
+systemctl suspend
 
-$PROG $OPTS
+# Check the return status of systemctl suspend
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to suspend the system." >&2
+    exit 1
+fi
+
+echo "System suspended successfully."
+exit 0
