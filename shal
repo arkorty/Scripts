@@ -1,0 +1,70 @@
+#!/bin/sh
+
+set -eu
+
+# Function to print error messages
+error() {
+    printf "%s\n" "$1" >&2
+}
+
+# Function to get aliases from .zshrc
+get_aliases() {
+    if [ ! -f "$HOME/.zshrc" ]; then
+        error "Error: $HOME/.zshrc not found."
+        exit 1
+    fi
+    sed -n '/^# non-interactive aliases/,$p' "$HOME/.zshrc" | grep '^alias ' | sed 's/alias \([^=]*\)=.*/\1/'
+}
+
+# Function to get user input using rofi
+get_user_input() {
+    if ! command -v rofi >/dev/null 2>&1; then
+        error "Error: rofi is not installed or not in PATH."
+        exit 1
+    fi
+    printf "%s" "$1" | rofi -dmenu -i -p "Zsh alias"
+}
+
+# Function to extract alias and arguments
+parse_input() {
+    input="$1"
+    alias=$(printf "%s" "$input" | awk '{print $1}')
+    arguments=$(printf "%s" "$input" | awk '{$1=""; print $0}' | sed 's/^ *//')
+    printf "%s\n%s" "$alias" "$arguments"
+}
+
+# Function to get the command for an alias
+get_alias_command() {
+    alias="$1"
+    grep "^alias $alias=" "$HOME/.zshrc" | sed "s/^alias $alias='\(.*\)'/\1/"
+}
+
+# Main function
+main() {
+    aliases=$(get_aliases)
+    input=$(get_user_input "$aliases")
+    
+    if [ -z "$input" ]; then
+        exit 0
+    fi
+    
+    parsed_input=$(parse_input "$input")
+    selected_alias=$(printf "%s" "$parsed_input" | sed -n '1p')
+    arguments=$(printf "%s" "$parsed_input" | sed -n '2p')
+    
+    command=$(get_alias_command "$selected_alias")
+    
+    if [ -z "$command" ]; then
+        error "Error: Alias '$selected_alias' not found."
+        exit 1
+    fi
+    
+    if ! command -v zsh >/dev/null 2>&1; then
+        error "Error: zsh is not installed or not in PATH."
+        exit 1
+    fi
+    
+    zsh -c "$command $arguments"
+}
+
+main
