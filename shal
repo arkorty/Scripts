@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Script:       shal
+# License:      MIT
+# Author:       Arkaprabha Chakraborty
+# Created:      30-08-24
+# Dependencies: zsh, rofi
+#
+# Copyright (C) 2024 Arkaprabha Chakraborty
+
 set -eu
 
 # Function to print error messages
